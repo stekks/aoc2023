@@ -40,16 +40,16 @@ pub fn main() !void {
         }
 
         // no reversed for loop?
-        var l = line.len;
+        var l = line.len - 1;
         while (l >= 0) : (l -= 1) {
-            if (std.ascii.isDigit(line[l - 1])) {
-                last = line[l - 1] - '0';
+            if (std.ascii.isDigit(line[l])) {
+                last = line[l] - '0';
                 lastb = last;
                 break;
             }
 
             for (digits, 1..) |digit, pos| {
-                if (std.mem.startsWith(u8, line[l - 1 ..], digit)) {
+                if (std.mem.startsWith(u8, line[l..], digit)) {
                     lastb = @as(usize, pos);
                     break;
                 }
