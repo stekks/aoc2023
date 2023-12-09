@@ -11,7 +11,48 @@ const gpa = util.gpa;
 const data = @embedFile("data/day02.txt");
 
 pub fn main() !void {
-    
+    var lines = splitAny(u8, data, "\n");
+
+    var sum: usize = 0;
+    while (lines.next()) |line| {
+        var game = tokenizeAny(u8, line[5..], ":");
+        var gameNr = try parseInt(usize, game.next().?, 10);
+        var sets = tokenizeAny(u8, game.next().?, ";");
+
+        var red: i32 = 12;
+        var green: i32 = 13;
+        var blue: i32 = 14;
+        var possible: bool = true;
+        while (sets.next()) |set| {
+            var cubes = splitAny(u8, set, ",");
+            while (cubes.next()) |cube| {
+                var values = tokenizeAny(u8, cube, " ");
+                var points = try parseInt(i32, values.next().?, 10);
+                var color = values.next().?;
+                switch (color[0]) {
+                    'r' => if (red < points) {
+                        possible = false;
+                    },
+                    'g' => if (green < points) {
+                        possible = false;
+                    },
+                    'b' => if (blue < points) {
+                        possible = false;
+                    },
+                    else => unreachable,
+                }
+                if (!possible) {
+                    break;
+                }
+            }
+        }
+
+        if (possible) {
+            print("Possbile {d}\n", .{gameNr});
+            sum += gameNr;
+        }
+    }
+    print("{d}\n", .{sum});
 }
 
 // Useful stdlib functions
