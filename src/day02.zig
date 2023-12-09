@@ -14,6 +14,7 @@ pub fn main() !void {
     var lines = splitAny(u8, data, "\n");
 
     var sum: usize = 0;
+    var sumb: i32 = 0;
     while (lines.next()) |line| {
         var game = tokenizeAny(u8, line[5..], ":");
         var gameNr = try parseInt(usize, game.next().?, 10);
@@ -23,6 +24,9 @@ pub fn main() !void {
         var green: i32 = 13;
         var blue: i32 = 14;
         var possible: bool = true;
+        var maxRed: i32 = 0;
+        var maxGreen: i32 = 0;
+        var maxBlue: i32 = 0;
         while (sets.next()) |set| {
             var cubes = splitAny(u8, set, ",");
             while (cubes.next()) |cube| {
@@ -30,19 +34,31 @@ pub fn main() !void {
                 var points = try parseInt(i32, values.next().?, 10);
                 var color = values.next().?;
                 switch (color[0]) {
-                    'r' => if (red < points) {
-                        possible = false;
+                    'r' => {
+                        if (points > maxRed) {
+                            maxRed = points;
+                        }
+                        if (red < points) {
+                            possible = false;
+                        }
                     },
-                    'g' => if (green < points) {
-                        possible = false;
+                    'g' => {
+                        if (points > maxGreen) {
+                            maxGreen = points;
+                        }
+                        if (green < points) {
+                            possible = false;
+                        }
                     },
-                    'b' => if (blue < points) {
-                        possible = false;
+                    'b' => {
+                        if (points > maxBlue) {
+                            maxBlue = points;
+                        }
+                        if (blue < points) {
+                            possible = false;
+                        }
                     },
                     else => unreachable,
-                }
-                if (!possible) {
-                    break;
                 }
             }
         }
@@ -51,8 +67,11 @@ pub fn main() !void {
             print("Possbile {d}\n", .{gameNr});
             sum += gameNr;
         }
+
+        sumb += (maxBlue * maxGreen * maxRed);
     }
-    print("{d}\n", .{sum});
+    print("part a {d}\n", .{sum});
+    print("part b {d}\n", .{sumb});
 }
 
 // Useful stdlib functions
